@@ -2,6 +2,7 @@
 
 #include "GeneralMV.h"
 
+#include <iostream>
 using namespace std;
 
 //#define __DEBUG__
@@ -40,11 +41,10 @@ using namespace std;
 /* static */ vec3 GeneralMV::_center = { 0.0f, 0.0f, 0.0f }; //!> for now just the origin
 /* static */ float GeneralMV::_zpp;                          //!> location of projection plane for perspective projection
 
-// e = normalize( < 3, 1, 5 > )
-/* static */ cryph::AffVector GeneralMV::_E = cryph::AffVector( 0.867535f, 0.497376f, 0.00139473 );
-/* static */ float GeneralMV::_EX = 0.507093f;
-/* static */ float GeneralMV::_EY = 0.169030f;
-/* static */ float GeneralMV::_EZ = 0.845154f;
+/* static */ cryph::AffVector GeneralMV::_E = cryph::AffVector( 1.0f, 0.0f, 0.0f );
+/* static */ float GeneralMV::_EX = 0.0f;
+/* static */ float GeneralMV::_EY = 0.0f;
+/* static */ float GeneralMV::_EZ = 1.0f;
 /* static */ float GeneralMV::_F = 3.0f;
 /* static */ float GeneralMV::_D = 0.0f;
 /* static */ float GeneralMV::_frustum = -3.0f;
@@ -58,7 +58,7 @@ using namespace std;
 /* static */ float GeneralMV::_lightStrength[3 * numLights] = {
   1.0, 1.0, 1.0, // source 0: 100% strength white
   0.4, 0.4, 0.4, // source 1:  40% strength white
-  0.8, 0.8, 0.0  // source 2:  80% strength yellow
+  0.8, 0.8, 0.8  // source 2:  80% strength yellow
 };
 /* static */ vec4 GeneralMV::_ambientStrength = { 0.25, 0.25, 0.25, 1.0 }; // assumed ambient light
 /********************** END PHONG VARS ************************/
@@ -124,15 +124,15 @@ void GeneralMV::handleCommand( unsigned char key, double ldsX, double ldsY )
 
   if( key == 'q' )
     {
-       _proj_type = OBLIQUE;
+      setProjectionType( OBLIQUE );
     }
   else if( key == 'o' )
     {
-      _proj_type = ORTHOGONAL;
+      setProjectionType( ORTHOGONAL );
     }
   else if( key == 'p' )
     {
-      _proj_type = PERSPECTIVE;
+      setProjectionType( PERSPECTIVE );
     }
   
   if( key == 'w' )
@@ -178,6 +178,30 @@ void GeneralMV::handleCommand( unsigned char key, double ldsX, double ldsY )
   printEyeLoc();
   printBox();
 } /* end GeneralMV::handleCommand() */
+
+/* class member function */
+void GeneralMV::setProjectionType( PROJECTION_TYPE proj_type )
+{
+  _proj_type = proj_type;
+} /* end GeneralMV::setProjectionType() */
+
+/* class member function */
+void GeneralMV::handleMouseFunc( int button, int state, int x, int y )
+{
+  cout << "GeneralMV::handleMouseFunc()" << endl;
+} /* end GeneralMV::handleMouseFunc() */
+
+/* class member function */
+void GeneralMV::handleMouseMotion( int x, int y )
+{
+  cout << "GeneralMV::handleMouseMotion()" << endl;
+} /* end GeneralMV::handleMouseMotion() */
+
+/* class member function */
+void GeneralMV::handleMousePassiveMotion( int x, int y )
+{
+  cout << "GeneralMV::handleMousePassiveMotion()" << endl;
+} /* end General::handleMousePassiveMotion() */
 
 void GeneralMV::calcBoundingSphere()
 {

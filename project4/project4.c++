@@ -3,7 +3,7 @@
 #include <GL/gl.h>
 #include <GL/freeglut.h>
 
-#include "Controller.h"
+#include "ControllerSub.h"
 #include "Board.h"
 #include "King.h"
 #include "Pawn.h"
@@ -22,7 +22,7 @@ int main(int argc, char* argv[])
 	// One-time initialization of the glut
 	glutInit(&argc, argv);
 
-	Controller c("Your move.", GLUT_DEPTH | GLUT_DOUBLE);
+	ControllerSub c("Your move.", GLUT_DEPTH | GLUT_DOUBLE);
 
 	// create your scene, adding things to the Controller....
 	vec3 location = { -50.0f, -0.5f, 0.0f };

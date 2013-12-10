@@ -25,15 +25,6 @@ _color( color )
   float zmin = corner[2];
   float zmax = corner[2] + width;
 
-  /*
-  float xmin = -0.5f;
-  float xmax = 0.5f;
-  float ymin = -0.5f;
-  float ymax = 0.5f;
-  float zmin = -0.5f;
-  float zmax = 0.5f;
-  */
-
   _limits[0] = xmin;
   _limits[1] = xmax;
   _limits[2] = ymin;
@@ -119,15 +110,21 @@ void Square::render()
     }
   else if( _color == BLACK )
     {
-      kd[0] = RGB( 100 );
-      kd[1] = RGB( 69 );
-      kd[2] = RGB( 19 );
+      //kd[0] = RGB( 100 );
+      //kd[1] = RGB( 69 );
+      //kd[2] = RGB( 19 );
+      kd[0] = RGB( 49 );
+      kd[1] = RGB( 79 );
+      kd[2] = RGB( 79 );
     }
   else if( _color == BORDER )
     {
-      kd[0] = RGB( 139.0f );
-      kd[1] = RGB( 69.0f );
-      kd[2] = RGB( 19.0f );
+      //kd[0] = RGB( 139.0f );
+      //kd[1] = RGB( 69.0f );
+      //kd[2] = RGB( 19.0f );
+      kd[0] = RGB( 49 );
+      kd[1] = RGB( 79 );
+      kd[2] = RGB( 79 );
     }
   else if( _color == TEST )
     {
@@ -142,7 +139,8 @@ void Square::render()
       kd[2] = 1.0f;
     }
 
-  vec4 ks = { 0.3, 0.3, 0.3, 1.0 };
+  //vec4 ks = { 0.3, 0.3, 0.3, 1.0 };
+  vec4 ks = { 1.0, 1.0, 1.0, 1.0 };
   vec4 ka;
   memcpy( ka, kd, sizeof( vec4 ) );
 

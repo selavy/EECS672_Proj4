@@ -6,13 +6,13 @@ LINK = g++ -fPIC -g
 LOCAL_UTIL_LIBRARIES = -L../lib -lcryph -lfont -lglsl -lmvc
 OGL_LIBRARIES = -lglut -lGLU -lGL
 
-OBJS = project3.o MatrixIF.o GeneralMV.o Square.o Board.o Pawn.o King.o Cylinder.o Sphere.o Bishop.o
+OBJS = ControllerSub.o project4.o MatrixIF.o GeneralMV.o Square.o Board.o Pawn.o King.o Cylinder.o Sphere.o Bishop.o
 
-all: project3
-	./project3
+all: project4
+	./project4
 
-project3: $(OBJS) ../lib/libcryph.so ../lib/libfont.so ../lib/libglsl.so ../lib/libmvc.so
-	$(LINK) -o project3 $(OBJS) $(LOCAL_UTIL_LIBRARIES) $(OGL_LIBRARIES)
+project4: $(OBJS) ../lib/libcryph.so ../lib/libfont.so ../lib/libglsl.so ../lib/libmvc.so
+	$(LINK) -o project4 $(OBJS) $(LOCAL_UTIL_LIBRARIES) $(OGL_LIBRARIES)
 
 ../lib/libcryph.so: ../cryphutil/AffVector.h ../cryphutil/AffVector.c++ ../cryphutil/AffPoint.h ../cryphutil/AffPoint.c++
 	(cd ../cryphutil; make)
@@ -26,8 +26,8 @@ project3: $(OBJS) ../lib/libcryph.so ../lib/libfont.so ../lib/libglsl.so ../lib/
 ../lib/libmvc.so: ../mvcutil/Controller.h ../mvcutil/Controller.c++ ../mvcutil/ModelView.h ../mvcutil/ModelView.c++
 	(cd ../mvcutil; make)
 
-project3.o: project3.c++
-	$(CPP) $(C_FLAGS) project3.c++
+project4.o: project4.c++
+	$(CPP) $(C_FLAGS) project4.c++
 GeneralMV.o: GeneralMV.h GeneralMV.c++
 	$(CPP) $(C_FLAGS) GeneralMV.c++
 MatrixIF.o: MatrixIF.h MatrixIF.c++
@@ -46,8 +46,10 @@ Sphere.o: Sphere.h Sphere.c++
 	$(CPP) $(C_FLAGS) Sphere.c++
 Bishop.o: Bishop.h Bishop.c++
 	$(CPP) $(C_FLAGS) Bishop.c++
+ControllerSub.o: ControllerSub.h ControllerSub.c++
+	$(CPP) $(C_FLAGS) ControllerSub.c++
 
 clean:
-	rm -f *~ *.o project3
+	rm -f *~ *.o project4
 
 
