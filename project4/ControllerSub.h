@@ -9,6 +9,12 @@
 class ControllerSub : public Controller
 {
  public:
+  enum {
+    ScreenWidth = 360,
+    ScreenHeight = 360
+  };
+
+ public:
   explicit ControllerSub( const std::string& name, int glutRCFlags = 0 );
   virtual ~ControllerSub();
 

@@ -1,6 +1,7 @@
 // GeneralMV.c++
 
 #include "GeneralMV.h"
+#include "GL/freeglut.h"
 
 #include <iostream>
 using namespace std;
@@ -21,6 +22,7 @@ using namespace std;
 
 /* static */ GLint GeneralMV::ppuLoc_M4x4_wc_ec = -1;
 /* static */ GLint GeneralMV::ppuLoc_M4x4_ec_lds = -1;
+/* static */ GLint GeneralMV::ppuLoc_M4x4_dynamic = -1;
 
 /* static */ GLint GeneralMV::pvaLoc_wcPosition = -1;
 /* static */ GLint GeneralMV::pvaLoc_wcNormal = -1;
@@ -41,6 +43,7 @@ using namespace std;
 /* static */ vec3 GeneralMV::_center = { 0.0f, 0.0f, 0.0f }; //!> for now just the origin
 /* static */ float GeneralMV::_zpp;                          //!> location of projection plane for perspective projection
 
+/* static */ int GeneralMV::lastMousePosition[2] = { 0, 0 };
 /* static */ cryph::AffVector GeneralMV::_E = cryph::AffVector( 1.0f, 0.0f, 0.0f );
 /* static */ float GeneralMV::_EX = 0.0f;
 /* static */ float GeneralMV::_EY = 0.0f;
@@ -48,6 +51,12 @@ using namespace std;
 /* static */ float GeneralMV::_F = 3.0f;
 /* static */ float GeneralMV::_D = 0.0f;
 /* static */ float GeneralMV::_frustum = -3.0f;
+/* static */ double GeneralMV::scale = 1.0f;
+/* static */ cryph::Matrix4x4 GeneralMV::M4x4_dynamic;
+/* static */ double GeneralMV::_rx = 0;
+/* static */ double GeneralMV::_ry = 0;
+/* static */ double GeneralMV::_rz = 0;
+/* static */ bool GeneralMV::mouseIsDown = false;
 
 /*********************** PHONG LIGHTING MODEL VARIABLES *******/
 /* static */ vec4 GeneralMV::_lightPosition[numLights] = {
@@ -68,7 +77,7 @@ using namespace std;
 
 /* static */ GeneralMV::PROJECTION_TYPE GeneralMV::_proj_type = PERSPECTIVE;
 /* static */ float GeneralMV::_r = 0.0f;
-
+/* static */ bool GeneralMV::useWheel = true;
 
 GeneralMV::GeneralMV()
 {
@@ -158,21 +167,11 @@ void GeneralMV::handleCommand( unsigned char key, double ldsX, double ldsY )
   else if( key == 'z' )
     {
       // TODO: (med priority)
-      // zoom by moving zpp in _perspective
-
-      // this is not correct.  zoom should be implemented by changing the width and height of frustum
-      // will correct in next project
-      if( _frustum > MAXZOOM )
-	_frustum -= MOVESPEED;
-      else
-	_frustum = MAXZOOM;
+      addToGlobalZoom( 0.01 );
     }
   else if( key == ' ' )
     {
-      if( _frustum < MINZOOM )
-	_frustum += MOVESPEED;
-      else
-	_frustum = MINZOOM;
+      addToGlobalZoom( -0.01 );
     }
 
   printEyeLoc();
@@ -185,22 +184,106 @@ void GeneralMV::setProjectionType( PROJECTION_TYPE proj_type )
   _proj_type = proj_type;
 } /* end GeneralMV::setProjectionType() */
 
+void GeneralMV::addToGlobalRotationDegrees( double rx, double ry, double rz ) {
+  cryph::Matrix4x4 RotationMatrix;
+
+  /*
+  if( rx != 0 )
+    RotationMatrix *= cryph::Matrix4x4::xRotationDegrees( rx );
+  if( ry != 0 )
+    RotationMatrix *= cryph::Matrix4x4::yRotationDegrees( ry );
+  if( rz != 0 )
+    RotationMatrix *= cryph::Matrix4x4::zRotationDegrees( rz );
+  
+  M4x4_dynamic = RotationMatrix * M4x4_dynamic;
+  */
+  
+  _rx += rx;
+  _ry += ry;
+  _rz += rz;
+
+  M4x4_dynamic = cryph::Matrix4x4::xRotationDegrees( rx ) * cryph::Matrix4x4::yRotationDegrees( ry ) * cryph::Matrix4x4::zRotationDegrees( rz ) * M4x4_dynamic;
+  
+} /* end GeneralMV::addToGlobalRotationDegrees() */
+
+void GeneralMV::addToGlobalZoom( double increment )
+{
+  if( _proj_type != PERSPECTIVE ) return;
+
+  scale += increment;
+
+  if( scale < 0.3f )
+    scale = 0.3f;
+  if( scale > 2.0f )
+    scale = 2.0f;
+} /* end GeneralMV::addToGlobalZoom() */
+
+void GeneralMV::scaleGlobalZoom( double multiplier )
+{
+  if( _proj_type != PERSPECTIVE ) return;
+
+  scale *= multiplier;
+
+  if( scale < 0.3f ) // correct if multiplier is negative
+    scale = 0.3f;
+  if( scale > 2.0f )
+    scale = 2.0f;
+} /* end GeneralMV::scaleGlobalZoom() */
+
 /* class member function */
 void GeneralMV::handleMouseFunc( int button, int state, int x, int y )
 {
-  cout << "GeneralMV::handleMouseFunc()" << endl;
+  if( button == 3 ) // scroll up
+    {
+      if( useWheel )
+	scaleGlobalZoom( 0.9 );
+      useWheel ^= true;
+    }
+
+  else if( button == 4 ) // scroll down
+    {
+      if( useWheel )
+	scaleGlobalZoom( 1.1 );
+      useWheel ^= true;
+    }
+
+  else if( button == GLUT_LEFT_BUTTON )
+    {
+      if( state == GLUT_DOWN )
+	{
+	  mouseIsDown = true;
+	  lastMousePosition[0] = x;
+	  lastMousePosition[1] = y;
+	}
+      else
+	  mouseIsDown = false;
+    }
 } /* end GeneralMV::handleMouseFunc() */
 
 /* class member function */
 void GeneralMV::handleMouseMotion( int x, int y )
 {
-  cout << "GeneralMV::handleMouseMotion()" << endl;
+  if( mouseIsDown )
+    {
+      lastMousePosition[0] = x;
+      lastMousePosition[1] = y;
+      mouseIsDown = false;
+      return;
+    }
+
+  float thetaY = static_cast<double>( x - lastMousePosition[0] ) / ScreenHeight;
+  float thetaX = static_cast<double>( y - lastMousePosition[1] ) / ScreenWidth;
+  
+  addToGlobalRotationDegrees( thetaX, thetaY, 0 );
+
+  lastMousePosition[0] = x;
+  lastMousePosition[1] = y;
 } /* end GeneralMV::handleMouseMotion() */
 
 /* class member function */
 void GeneralMV::handleMousePassiveMotion( int x, int y )
 {
-  cout << "GeneralMV::handleMousePassiveMotion()" << endl;
+  // do nothing
 } /* end General::handleMousePassiveMotion() */
 
 void GeneralMV::calcBoundingSphere()
@@ -208,12 +291,6 @@ void GeneralMV::calcBoundingSphere()
   // get the region of interest from the controller
   double xyzLimits[6];
   Controller::getCurrentController()->getWCRegionOfInterest( xyzLimits );
-
-#ifdef __DEBUG__
-  cout << "REGION OF INTEREST: " << endl;
-  for( short i = 0; i < 6; i += 2 )
-    cout << "(" << xyzLimits[i] << ", " << xyzLimits[i+1] << ")" << endl;
-#endif
 
   // compute C (midpoint of region of interest)
   _center[0] = ( xyzLimits[1] + xyzLimits[0] ) / 2.0f;
@@ -243,7 +320,6 @@ void GeneralMV::calcBoundingSphere()
   // TODO: (lowest priority)
   // get a faster sqrt function
   _r = (tmpmin > tmpmax) ? sqrt( tmpmin ) : sqrt( tmpmax );
-
   _zpp = _frustum * _r;
   _D = _F * _r;
 
@@ -253,10 +329,6 @@ void GeneralMV::calcBoundingSphere()
   _E.vComponents( tmpE );
   _EX = tmpE[0]; _EY = tmpE[1]; _EZ = tmpE[2];
   
-#ifdef __DEBUG__
-  cout << "E = (" << _EX << ", " << _EY << ", " << _EZ << ")" << endl;
-#endif
-
   _eye[0] = _center[0] + _D * _EX;
   _eye[1] = _center[1] + _D * _EY;
   _eye[2] = _center[2] + _D * _EZ;
@@ -291,18 +363,6 @@ void GeneralMV::setECMinMax()
   _ecmax[2] = _r - _D;
   _ecmin[2] = -1.0f * (_D + _r);
 
-#ifdef __DEBUG__
-  cout << "CENTER:" << endl;
-  for( short i = 0; i < 3; ++i )
-    cout << _center[i] << endl;
-  
-  cout << "_r = " << _r << endl;
-  cout << "VAR = " << VAR << endl;
-  cout << "adjusted ratio = " << (_ecmax[1] - _ecmin[1])/(_ecmax[0] - _ecmin[0]) << endl;
-  
-  for( short i = 0; i < 3; ++i )
-    cout << "(" << _ecmin[i] << ", " << _ecmax[i] << ")" << endl;
-#endif
 } /* end GeneralMV::setECMinMax() */
 
 void GeneralMV::getMatrices( double limits[6] )
@@ -333,7 +393,6 @@ void GeneralMV::getMatrices( double limits[6] )
 		 _ecmax[1], _ecmin[2], _ecmax[2],
 		 _projection
 		 );
-  
     }
   else if( _proj_type == OBLIQUE )
     {
@@ -345,13 +404,26 @@ void GeneralMV::getMatrices( double limits[6] )
     }
   else //( _proj_type == PERSPECTIVE )
     {
+      _ecmin[0] *= scale;
+      _ecmax[0] *= scale;
+      _ecmin[1] *= scale;
+      _ecmax[1] *= scale;
+      
       perspective( _zpp, _ecmin[0], _ecmax[0], _ecmin[1], _ecmax[1], _ecmin[2], _ecmax[2], _projection ); // length(m) == 16
     }
-  
 
+  float M_dynamic[16];
+  cryph::AffVector min( _ecmin );
+  cryph::AffVector center( _center );
+  cryph::AffVector d = min - center;
+  cryph::Matrix4x4 Tpre = cryph::Matrix4x4( d );
+  cryph::Matrix4x4 Tpost = cryph::Matrix4x4( -d );
+  cryph::Matrix4x4 RotationMatrix = Tpre * M4x4_dynamic * Tpost;
+  RotationMatrix.extractColMajor( M_dynamic );
   
   glUniformMatrix4fv( GeneralMV::ppuLoc_M4x4_wc_ec, 1, GL_FALSE, _model_view );
   glUniformMatrix4fv( GeneralMV::ppuLoc_M4x4_ec_lds, 1, GL_FALSE, _projection );
+  glUniformMatrix4fv( GeneralMV::ppuLoc_M4x4_dynamic, 1, GL_FALSE, M_dynamic );
 } /* end GeneralMV::getMatrices() */
 
 /**
@@ -399,6 +471,7 @@ void GeneralMV::fetchGLSLVariableLocations()
     {
       ppuLoc_M4x4_wc_ec = ppUniformLocation( shaderProgram, "M4x4_wc_ec" );
       ppuLoc_M4x4_ec_lds = ppUniformLocation( shaderProgram, "M4x4_ec_lds" );
+      ppuLoc_M4x4_dynamic = ppUniformLocation( shaderProgram, "M4x4_dynamic" );
 
       pvaLoc_wcPosition = pvAttribLocation( shaderProgram, "wcPosition" );
       pvaLoc_wcNormal = pvAttribLocation( shaderProgram, "wcNormal" );

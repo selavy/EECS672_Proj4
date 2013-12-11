@@ -29,7 +29,8 @@ class GeneralMV : public ModelView
     OBLIQUE,
     PERSPECTIVE
   } PROJECTION_TYPE;
-  
+
+  enum { ScreenHeight = 50, ScreenWidth = 50 };
   enum { numLights = 3 }; // enum hack to avoid using a #define statement
 
  public:
@@ -66,6 +67,9 @@ class GeneralMV : public ModelView
 	static void scaleGlobalZoom( double multiplier ); //!> scale *= multiplier
 	static double scale;                              //!> for global zoom
 	static cryph::Matrix4x4 M4x4_dynamic;             //!> mouse-based dynamic 3D rotations
+	static double _rx;
+	static double _ry;
+	static double _rz;
 
 	vec3 * _points;
 	vec3 * _normals;
@@ -79,6 +83,7 @@ class GeneralMV : public ModelView
 	static GLuint shaderProgram;
 	static GLint ppuLoc_M4x4_wc_ec;
 	static GLint ppuLoc_M4x4_ec_lds;
+	static GLint ppuLoc_M4x4_dynamic;
 
 	static GLint ppuLoc_lightPosition;
 	static GLint ppuLoc_lightStrength;
@@ -105,6 +110,8 @@ class GeneralMV : public ModelView
 	static float _r;                              //!> Bounding sphere radius
 	static float _zpp;                            //!> projection plane for perspective projection
 
+	static bool mouseIsDown;
+	static int lastMousePosition[2];
 	static cryph::AffVector _E;
 	static float _EX;
 	static float _EY;
@@ -115,6 +122,7 @@ class GeneralMV : public ModelView
 	static PROJECTION_TYPE _proj_type;
 	mat4 _model_view;                            //!> The matrix to convert from eye coordinates to LDS
 	mat4 _projection;                            //!> The orthogonal projection matrix
+	static bool useWheel;
 
 };
 

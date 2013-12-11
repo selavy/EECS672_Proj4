@@ -17,6 +17,11 @@ uniform mat4 M4x4_ec_lds =                               //!> (W-V map) * (proje
 	     0.0, 1.0, 0.0, 0.0,
 	     0.0, 0.0, -1.0, 0.0,
 	     0.0, 0.0, 0.0, 1.0);
+uniform mat4 M4x4_dynamic =
+	mat4( 1.0, 0.0, 0.0, 0.0,
+	      0.0, 1.0, 0.0, 0.0,
+	      0.0, 0.0, 1.0, 0.0,
+	      0.0, 0.0, 0.0, 1.0);
 
 uniform vec4 p_ecLightPos[MAX_NUM_LIGHTS];
 uniform vec3 lightStrength[MAX_NUM_LIGHTS];
@@ -107,8 +112,9 @@ vec4 evaluateLightingModel(in vec3 ec_Q, in vec3 ec_nHat)
 void main ()
 {
 	// convert current vertex and its associated normal to eye coordinates
-	vec4 p_ecPosition = M4x4_wc_ec * vec4(wcPosition, 1.0);
-	mat3 normalMatrix = transpose( inverse( mat3x3(M4x4_wc_ec) ) );
+	mat4 M = M4x4_dynamic * M4x4_wc_ec;
+	vec4 p_ecPosition = M * vec4(wcPosition, 1.0);
+	mat3 normalMatrix = transpose( inverse( mat3x3(M) ) );
 	vec3 ec_nHat = normalize(normalMatrix * wcNormal);
 
 	colorToFS = evaluateLightingModel(p_ecPosition.xyz, ec_nHat);

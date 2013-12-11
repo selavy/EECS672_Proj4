@@ -1,4 +1,7 @@
 #include "ControllerSub.h"
+#include "Matrix4x4.h"
+
+using namespace std;
 
 ControllerSub * ControllerSub::curControllerSub = NULL;
 
@@ -21,7 +24,7 @@ void ControllerSub::establishInitialCallbacksForRC() {
   
   glutMouseFunc( ControllerSub::mouseFuncCB );
   glutMotionFunc( ControllerSub::mouseMotionCB );
-  glutPassiveMotionFunc( ControllerSub::mousePassiveMotionCB );
+  //glutPassiveMotionFunc( ControllerSub::mousePassiveMotionCB );
 } /* end Controller::establishInitialCallbacksForRC() */
 
 void ControllerSub::handleMouseFunc( int button, int state, int x, int y )
@@ -36,11 +39,7 @@ void ControllerSub::handleMouseFunc( int button, int state, int x, int y )
 
 void ControllerSub::handleMouseMotion( int x, int y )
 {
-  double ldsX, ldsY;
-  screenXYToLDS( x, y, ldsX, ldsY );
-
-  GeneralMV::handleMouseMotion( ldsX, ldsY );
-
+  GeneralMV::handleMouseMotion( x, y );
   glutPostRedisplay();
 } /* end ControllerSub::handleMouseMotion() */
 
@@ -48,7 +47,6 @@ void ControllerSub::handleMousePassiveMotion( int x, int y )
 {
   double ldsX, ldsY;
   screenXYToLDS( x, y, ldsX, ldsY );
-
   GeneralMV::handleMousePassiveMotion( ldsX, ldsY );
 } /* end ControllerSub::handleMousePassiveMotion() */
 
@@ -72,4 +70,3 @@ void ControllerSub::mousePassiveMotionCB( int x, int y )
   if( curControllerSub != NULL )
     curControllerSub->handleMousePassiveMotion( x, y );
 } /* end ControllerSub::mousePassiveMotionCB() */
-
