@@ -205,7 +205,7 @@ void Square::render()
   vec4 ks = { 1.0, 1.0, 1.0, 1.0 };
   vec4 ka;
   memcpy( ka, kd, sizeof( vec4 ) );
-
+  notUsingTexture();
   sendPhongLightModel( ka, kd, ks, 10 );
 
   glBindVertexArray( vao );

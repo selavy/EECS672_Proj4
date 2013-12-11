@@ -26,8 +26,8 @@ using namespace std;
 
 /* static */ GLint GeneralMV::pvaLoc_wcPosition = -1;
 /* static */ GLint GeneralMV::pvaLoc_wcNormal = -1;
-///* static */ GLint GeneralMV::ppuLoc_texture = -1;
-///* static */ GLint GeneralMV::ppuLoc_usingTexture = -1;
+/* static */ GLint GeneralMV::ppuLoc_texture = -1;
+/* static */ GLint GeneralMV::ppuLoc_usingTexture = -1;
 
 /********************* PHONG LIGHTING MODEL LOC VARS *********/
 /* static */ GLint GeneralMV::ppuLoc_lightPosition = -1;
@@ -112,7 +112,7 @@ void GeneralMV::printEyeLoc()
 
 void GeneralMV::notUsingTexture()
 {
-  //  glUniform1f( ppuLoc_usingTexture, -1 );
+  glUniform1i( ppuLoc_usingTexture, -1 );
 }
 
 void GeneralMV::printBox()
@@ -463,8 +463,8 @@ void GeneralMV::fetchGLSLVariableLocations()
 
       pvaLoc_wcPosition = pvAttribLocation( shaderProgram, "wcPosition" );
       pvaLoc_wcNormal = pvAttribLocation( shaderProgram, "wcNormal" );
-      //      ppuLoc_texture = ppUniformLocation( shaderProgram, "texture" );
-      //      ppuLoc_usingTexture = ppUniformLocation( shaderProgram, "usingTexture" );
+      ppuLoc_texture = ppUniformLocation( shaderProgram, "texture" );
+      ppuLoc_usingTexture = ppUniformLocation( shaderProgram, "usingTexture" );
       /***************** PHONG LIGHTING MODEL VARIABLES *********/
       ppuLoc_lightPosition = ppUniformLocation( shaderProgram, "p_ecLightPos" );
       ppuLoc_lightStrength = ppUniformLocation( shaderProgram, "lightStrength" );

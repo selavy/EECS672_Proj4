@@ -92,8 +92,8 @@ class GeneralMV : public ModelView
 	static GLint ppuLoc_kd;
 	static GLint ppuLoc_ks;
 	static GLint ppuLoc_m;
-	//	static GLint ppuLoc_texture;
-	//static GLint ppuLoc_usingTexture;
+	static GLint ppuLoc_texture;
+	static GLint ppuLoc_usingTexture;
 
 	static void fetchGLSLVariableLocations();
 
