@@ -1,7 +1,6 @@
 #include <cmath>
 
 #include "Cylinder.h"
-#include <iostream>
 
 using namespace std;
 
@@ -96,7 +95,7 @@ void Cylinder::render()
   getMatrices( _limits );
 
   vec4 kd;
-  kd[3] = 1.0f;
+  kd[3] = 0.7f;
 
 #ifndef BLACK
 #define BLACK 0
@@ -129,7 +128,6 @@ void Cylinder::render()
   vec4 ka;
   memcpy( ka, kd, sizeof( vec4 ) );
   sendPhongLightModel( ka, kd, ks, 25 );
-  
   glBindVertexArray( vao );
   glDrawArrays( GL_TRIANGLE_STRIP, 0, 2*(N_POINTS_AROUND_SLICE+1));
 

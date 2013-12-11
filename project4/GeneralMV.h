@@ -17,6 +17,7 @@
 #define RGB(x) ( (x) / 255.0 )
 
 typedef float mat4[16]; // specify in row major, and will always transpose with openGL
+typedef float vec2[2];
 typedef float vec3[3];
 typedef float vec4[4];
 
@@ -59,6 +60,7 @@ class GeneralMV : public ModelView
 	void quad( int a, int b, int c, int d, int& Index );
 	void printBox();
 	void printEyeLoc();
+	void notUsingTexture();
 
 	// TODO: dynamic rotations (HIGH)
 	// common 3D global dynamic viewing requests
@@ -93,6 +95,8 @@ class GeneralMV : public ModelView
 	static GLint ppuLoc_kd;
 	static GLint ppuLoc_ks;
 	static GLint ppuLoc_m;
+	//	static GLint ppuLoc_texture;
+	//static GLint ppuLoc_usingTexture;
 
 	static void fetchGLSLVariableLocations();
 

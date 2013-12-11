@@ -70,3 +70,40 @@ void ControllerSub::mousePassiveMotionCB( int x, int y )
   if( curControllerSub != NULL )
     curControllerSub->handleMousePassiveMotion( x, y );
 } /* end ControllerSub::mousePassiveMotionCB() */
+
+bool ControllerSub::drawingOpaque() const
+{
+  return bDrawOpaque;
+} /* end ControllerSub::drawingOpaque() */
+
+void ControllerSub::handleDisplay()
+{
+  glDepthMask(GL_TRUE);
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+  glDisable(GL_BLEND);
+  drawAllOpaqueObjects();
+
+  glDepthMask(GL_FALSE);
+  glEnable(GL_BLEND);
+  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+  drawAllTranslucentObjects();
+
+  glutSwapBuffers();
+} /* end ControllerSub::handleDisplay() */
+
+void ControllerSub::drawAllOpaqueObjects()
+{
+  bDrawOpaque = true;
+  for( std::vector<ModelView*>::iterator it = models.begin(); it != models.end(); ++it )
+    (*it)->render();
+  //Controller::handleDisplay();
+} /* end ControllerSub::drawAllOpaqueObjects() */
+
+void ControllerSub::drawAllTranslucentObjects()
+{
+  bDrawOpaque = false;
+  for( std::vector<ModelView*>::iterator it = models.begin(); it != models.end(); ++it )
+    (*it)->render();
+  //Controller::handleDisplay();
+} /* end ControllerSub::drawAllTranslucentObjects() */

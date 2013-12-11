@@ -28,7 +28,7 @@
 
 class Square : public GeneralMV
 {
-public:
+ public:
   Square( int color, vec3 corner, float width, float thickness );
 	virtual ~Square();
 
@@ -36,11 +36,15 @@ public:
 	void getWCBoundingBox(double* xyzLimitsF) const;
 	void defineModel();
 	void render();
+	void defineTex( int Index );
 	
 private:
 	GLuint vao;
-	GLuint vbo[2]; //!> 0: coordinate data, 1: normals
+	GLuint vbo[2/*3*/]; //!> 0: coordinate data, 1: normals, 2: texture
+	//	GLuint mytex[1]; //!> texture mapping buffer
+	//	static GLint pvaLoc_vTexCoord;
 	
+	//	vec2 tex_coords[SQ_VERTICES];
 	double _limits[6];
 	int _color;
 

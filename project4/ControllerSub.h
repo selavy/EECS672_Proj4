@@ -17,8 +17,13 @@ class ControllerSub : public Controller
  public:
   explicit ControllerSub( const std::string& name, int glutRCFlags = 0 );
   virtual ~ControllerSub();
+  bool drawingOpaque() const;
+  virtual void handleDisplay();
 
  private:
+  virtual void drawAllOpaqueObjects();
+  virtual void drawAllTranslucentObjects();
+  
   virtual void establishInitialCallbacksForRC();
   virtual void handleMouseFunc( int button, int state, int x, int y );
   virtual void handleMouseMotion( int x, int y );
@@ -28,6 +33,7 @@ class ControllerSub : public Controller
   static void mousePassiveMotionCB( int x, int y );
 
   static ControllerSub * curControllerSub;
+  bool bDrawOpaque;
 };
 
 #endif

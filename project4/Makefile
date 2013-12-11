@@ -1,18 +1,19 @@
 CPP = g++
-INC = -I../cryphutil -I../fontutil -I../glslutil -I../mvcutil
+INC = -I../cryphutil -I../fontutil -I../glslutil -I../imageutil -I../mvcutil
 C_FLAGS = -fPIC -g -c -DGL_GLEXT_PROTOTYPES $(INC)
 
 LINK = g++ -fPIC -g
-LOCAL_UTIL_LIBRARIES = -L../lib -lcryph -lfont -lglsl -lmvc
+LOCAL_UTIL_LIBRARIES = -L../lib -lcryph -lfont -lglsl -limage -lmvc
 OGL_LIBRARIES = -lglut -lGLU -lGL
+SYSTEM_LIBRARIES = -ljpeg
 
 OBJS = ControllerSub.o project4.o MatrixIF.o GeneralMV.o Square.o Board.o Pawn.o King.o Cylinder.o Sphere.o Bishop.o
 
 all: project4
 	./project4
 
-project4: $(OBJS) ../lib/libcryph.so ../lib/libfont.so ../lib/libglsl.so ../lib/libmvc.so
-	$(LINK) -o project4 $(OBJS) $(LOCAL_UTIL_LIBRARIES) $(OGL_LIBRARIES)
+project4: $(OBJS) ../lib/libcryph.so ../lib/libfont.so ../lib/libglsl.so ../lib/libmvc.so ../lib/libimage.so
+	$(LINK) -o project4 $(OBJS) $(LOCAL_UTIL_LIBRARIES) $(OGL_LIBRARIES) $(SYSTEM_LIBRARIES)
 
 ../lib/libcryph.so: ../cryphutil/AffVector.h ../cryphutil/AffVector.c++ ../cryphutil/AffPoint.h ../cryphutil/AffPoint.c++
 	(cd ../cryphutil; make)
@@ -22,6 +23,9 @@ project4: $(OBJS) ../lib/libcryph.so ../lib/libfont.so ../lib/libglsl.so ../lib/
 
 ../lib/libglsl.so: ../glslutil/ShaderIF.h ../glslutil/ShaderIF.c++
 	(cd ../glslutil; make)
+
+../lib/libimage.so: ../imageutil/ImageReader.h ../imageutil/ImageReader.c++
+	(cd ../imageutil; make)
 
 ../lib/libmvc.so: ../mvcutil/Controller.h ../mvcutil/Controller.c++ ../mvcutil/ModelView.h ../mvcutil/ModelView.c++
 	(cd ../mvcutil; make)

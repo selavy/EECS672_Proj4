@@ -1,6 +1,7 @@
 // Bishop.c++
 
 #include "Bishop.h"
+#include "ControllerSub.h"
 
 #include <iostream>
 using namespace std;
@@ -172,6 +173,10 @@ void Bishop::defineModel()
 
 void Bishop::render()
 {
+  ControllerSub * c = dynamic_cast<ControllerSub*>(Controller::getCurrentController());
+  if(! c->drawingOpaque() )
+    return;
+
   GLint pgm;
   glGetIntegerv( GL_CURRENT_PROGRAM, &pgm );
   glUseProgram( shaderProgram );
@@ -214,7 +219,8 @@ void Bishop::render()
   memcpy( ka, kd, sizeof( vec4 ) );
   
   sendPhongLightModel( ka, kd, ks, 30 );
-  
+  notUsingTexture();
+
   for( std::vector<GeneralMV*>::iterator it = _objs.begin(); it != _objs.end(); ++it )
     (*it)->render();
 

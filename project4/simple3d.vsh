@@ -34,7 +34,10 @@ uniform float m = 1.0;                                   //!> specular coefficie
 
 layout (location = 0) in vec3 wcPosition;                //!> incoming vertex position in world coordinates
 in vec3 wcNormal;                                        //!> incoming normal vector in world coordinates
+//in vec2 vTexCoord;
+//uniform int usingTexture;
 
+//out vec2 texCoord;
 out vec4 colorToFS;
 
 vec4 evaluateLightingModel(in vec3 ec_Q, in vec3 ec_nHat)
@@ -121,5 +124,15 @@ void main ()
 
 	// apply the projection matrix to compute the projective space representation
 	// of the 3D logical device space coordinates of the input vertex:
+
+//	if( usingTexture != -1 )
+//	{
+//		texCoord = vTexCoord;
+//	}
+//	else
+//	{
+//		texCoord = vec2( 0, 0 );
+//	}
+
 	gl_Position =  M4x4_ec_lds * p_ecPosition;
 }

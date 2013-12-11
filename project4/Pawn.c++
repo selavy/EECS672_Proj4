@@ -1,6 +1,7 @@
 // Pawn.c++
 
 #include "Pawn.h"
+#include "ControllerSub.h"
 
 #include <iostream>
 using namespace std;
@@ -139,6 +140,10 @@ void Pawn::defineModel()
 
 void Pawn::render()
 {
+  ControllerSub * c = dynamic_cast<ControllerSub*>(Controller::getCurrentController() );
+  if( c->drawingOpaque() )
+    return;
+
   GLint pgm;
   glGetIntegerv( GL_CURRENT_PROGRAM, &pgm );
   
@@ -147,7 +152,7 @@ void Pawn::render()
   getMatrices( _limits );
 
   vec4 kd;
-  kd[3] = 1.0f;
+  kd[3] = 0.7f;
 
 #ifndef BLACK
 #define BLACK 0
@@ -181,6 +186,7 @@ void Pawn::render()
   memcpy( ka, kd, sizeof( vec4 ) );
 
   sendPhongLightModel( ka, kd, ks, 30 );
+  notUsingTexture();
 
   _midsection->render();
   _top->render();

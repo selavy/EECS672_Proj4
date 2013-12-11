@@ -1,6 +1,7 @@
 // King.c++
 
 #include "King.h"
+#include "ControllerSub.h"
 
 #include <iostream>
 using namespace std;
@@ -203,6 +204,9 @@ void King::defineModel()
 
 void King::render()
 {
+  ControllerSub * c = dynamic_cast<ControllerSub*>(Controller::getCurrentController());
+  if( !c->drawingOpaque() )
+    return;
   GLint pgm;
   glGetIntegerv( GL_CURRENT_PROGRAM, &pgm );
   
@@ -245,6 +249,7 @@ void King::render()
   vec4 ka;
   memcpy( ka, kd, sizeof( vec4 ) );
   sendPhongLightModel( ka, kd, ks, 30 );
+  notUsingTexture();
 
   glBindVertexArray( vao );
   glDrawArrays( GL_TRIANGLES, 0, KING_VERTICES );

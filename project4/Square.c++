@@ -1,8 +1,11 @@
 // Square.c++
 #include "Square.h"
+#include "ControllerSub.h"
 
 #include <iostream>
 using namespace std;
+
+///* static */ GLint Square::pvaLoc_vTexCoord = -1;
 
 Square::Square( 
 	       int color,
@@ -64,21 +67,64 @@ void Square::getWCBoundingBox(double* xyzLimits) const
   memcpy( xyzLimits, _limits, 6 * sizeof( double ) );
 } /* end Square::getWCBoundingBox() */
 
+void Square::defineTex( int Index )
+{
+  /*
+  tex_coords[Index - 6][0] = 0.0;
+  tex_coords[Index - 6][1] = 0.0;  
+  tex_coords[Index - 5][0] = 0.0;
+  tex_coords[Index - 5][1] = 1.0;
+  tex_coords[Index - 4][0] = 1.0;
+  tex_coords[Index - 4][1] = 1.0;
+  tex_coords[Index - 3][0] = 0.0;
+  tex_coords[Index - 3][1] = 0.0;
+  tex_coords[Index - 2][0] = 1.0;
+  tex_coords[Index - 2][1] = 1.0;
+  tex_coords[Index - 1][0] = 1.0;
+  tex_coords[Index - 1][1] = 1.0;
+  */
+}
+
 void Square::defineModel()
 {
   int index = 0;
 
   quad( 1, 0, 3, 2, index );
+  //  defineTex( index );
   quad( 3, 0, 4, 7, index );
+  //  defineTex( index );
   quad( 2, 3, 7, 6, index );
+  //  defineTex( index );
   quad( 5, 4, 0, 1, index );
+  //  defineTex( index );
   quad( 6, 5, 1, 2, index );
+  //  defineTex( index );
   quad( 4, 5, 6, 7, index );
+  //  defineTex( index );
+  /*
+  GLubyte my_texels[512][512][3];
+  for( int i = 0; i < 512; ++i )
+    {
+      for( int j = 0; j < 512; ++j )
+	{
+	  my_texels[i][j][0] = my_texels[i][j][1] = my_texels[i][j][2] = 0;
+	}
+    }
 
+  glGenTextures( 1, mytex );
+  glBindTexture( GL_TEXTURE_2D, mytex[0] );
+  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 512, 512, 0, GL_RGB, GL_UNSIGNED_BYTE, my_texels);
+  glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT );
+  glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT );
+  glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST );
+  glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST );
+  glActiveTexture( GL_TEXTURE0 );
+  */
+  /* create VAO */  
   glGenVertexArrays( 1, &vao );
   glBindVertexArray( vao );
   
-  glGenBuffers( 2, &vbo[0] );
+  glGenBuffers( 2 /*3*/, &vbo[0] );
   glBindBuffer( GL_ARRAY_BUFFER, vbo[0] );
   glBufferData( GL_ARRAY_BUFFER, sizeof( vec3 ) * SQ_VERTICES, _points, GL_STATIC_DRAW );
   glVertexAttribPointer( Square::pvaLoc_wcPosition, 3, GL_FLOAT, GL_FALSE, 0, 0 );
@@ -88,10 +134,26 @@ void Square::defineModel()
   glBufferData( GL_ARRAY_BUFFER, sizeof( vec3 ) * SQ_VERTICES, _normals, GL_STATIC_DRAW );
   glVertexAttribPointer( Square::pvaLoc_wcNormal, 3, GL_FLOAT, GL_TRUE, 0, 0 );
   glEnableVertexAttribArray( Square::pvaLoc_wcNormal );
+
+  /*
+  glBindBuffer( GL_ARRAY_BUFFER, vbo[2] );
+  glBufferData( GL_ARRAY_BUFFER, sizeof( tex_coords ), tex_coords, GL_STATIC_DRAW );
+
+  pvaLoc_vTexCoord = pvAttribLocation( shaderProgram, "vTexCoord" );
+  glEnableVertexAttribArray( pvaLoc_vTexCoord );
+  glVertexAttribPointer( pvaLoc_vTexCoord, 2, GL_FLOAT, GL_FALSE, 0, 0 );
+
+   glUniform1i( ppuLoc_texture, 0 );
+*/
+  
 } /* end Square::defineModel() */
 
 void Square::render()
 {
+  ControllerSub * c = dynamic_cast<ControllerSub*>(Controller::getCurrentController());
+  if(! c->drawingOpaque() )
+    return;
+
   GLint pgm;
   glGetIntegerv( GL_CURRENT_PROGRAM, &pgm );
   

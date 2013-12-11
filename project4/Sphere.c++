@@ -80,7 +80,7 @@ void Sphere::render()
   getMatrices( _limits );
 
   vec4 kd;
-  kd[3] = 1.0f;
+  kd[3] = 0.7f;
 
 #ifndef BLACK
 #define BLACK 0
