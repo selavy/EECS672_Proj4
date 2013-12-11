@@ -87,6 +87,8 @@ GeneralMV::GeneralMV()
 
       fetchGLSLVariableLocations();
     }
+
+  glUniform1i( ppuLoc_usingTexture, -1 );
 } /* end GeneralMV::GeneralMV() */
 
 GeneralMV::~GeneralMV()
@@ -113,7 +115,12 @@ void GeneralMV::printEyeLoc()
 void GeneralMV::notUsingTexture()
 {
   glUniform1i( ppuLoc_usingTexture, -1 );
-}
+} /* end GeneralMV::notUsingTexture() */
+
+void GeneralMV::usingTexture()
+{
+  glUniform1i( ppuLoc_usingTexture, 1 );
+} /* end GeneralMV::usingTexture() */
 
 void GeneralMV::printBox()
 {

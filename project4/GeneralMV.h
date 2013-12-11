@@ -61,6 +61,7 @@ class GeneralMV : public ModelView
 	void printBox();
 	void printEyeLoc();
 	void notUsingTexture();
+	void usingTexture();
 
 	// TODO: dynamic rotations (HIGH)
 	// common 3D global dynamic viewing requests

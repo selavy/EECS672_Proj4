@@ -3,6 +3,7 @@
 #define SQUARE_H
 
 #include "GeneralMV.h"
+#include "ImageReader.h"
 
 #ifndef WHITE
 #define WHITE 1
@@ -40,11 +41,11 @@ class Square : public GeneralMV
 	
 private:
 	GLuint vao;
-	GLuint vbo[2/*3*/]; //!> 0: coordinate data, 1: normals, 2: texture
-	//	GLuint mytex[1]; //!> texture mapping buffer
-	//	static GLint pvaLoc_vTexCoord;
+	GLuint vbo[3]; //!> 0: coordinate data, 1: normals, 2: texture
+	GLuint mytex[2]; //!> texture mapping buffer
+	static GLint pvaLoc_vTexCoord;
 	
-	//	vec2 tex_coords[SQ_VERTICES];
+	vec2 tex_coords[SQ_VERTICES];
 	double _limits[6];
 	int _color;
 
