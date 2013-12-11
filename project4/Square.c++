@@ -129,10 +129,8 @@ void Square::defineModel()
   glPixelStorei( GL_UNPACK_ALIGNMENT, 1 );
   glGenTextures( 2, mytex );
   glBindTexture( GL_TEXTURE_2D, mytex[0] );
-  float white[] = { 1.0, 1.0, 1.0, 1.0 };
-  glTexParameterfv( GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, white );
-  glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER );
-  glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER );
+  glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );
+  glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
   glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
   glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
   GLint level = 0;
@@ -150,9 +148,8 @@ void Square::defineModel()
       cout << "PROBLEM!" << endl;
 
   glBindTexture( GL_TEXTURE_2D, mytex[1] );
-  glTexParameterfv( GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, white );
-  glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER );
-  glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER );
+  glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );
+  glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
   glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
   glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
   level = 0;
