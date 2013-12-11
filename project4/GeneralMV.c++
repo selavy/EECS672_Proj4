@@ -55,9 +55,6 @@ using namespace std;
 /* static */ float GeneralMV::_frustum = -3.0f;
 /* static */ double GeneralMV::scale = 1.0f;
 /* static */ cryph::Matrix4x4 GeneralMV::M4x4_dynamic;
-/* static */ double GeneralMV::_rx = 0;
-/* static */ double GeneralMV::_ry = 0;
-/* static */ double GeneralMV::_rz = 0;
 /* static */ bool GeneralMV::mouseIsDown = false;
 
 /*********************** PHONG LIGHTING MODEL VARIABLES *******/
@@ -193,23 +190,7 @@ void GeneralMV::setProjectionType( PROJECTION_TYPE proj_type )
 
 void GeneralMV::addToGlobalRotationDegrees( double rx, double ry, double rz ) {
   cryph::Matrix4x4 RotationMatrix;
-
-  /*
-  if( rx != 0 )
-    RotationMatrix *= cryph::Matrix4x4::xRotationDegrees( rx );
-  if( ry != 0 )
-    RotationMatrix *= cryph::Matrix4x4::yRotationDegrees( ry );
-  if( rz != 0 )
-    RotationMatrix *= cryph::Matrix4x4::zRotationDegrees( rz );
-  
-  M4x4_dynamic = RotationMatrix * M4x4_dynamic;
-  */
-  
-  _rx += rx;
-  _ry += ry;
-  _rz += rz;
-
-  M4x4_dynamic = cryph::Matrix4x4::xRotationDegrees( rx ) * cryph::Matrix4x4::yRotationDegrees( ry ) * cryph::Matrix4x4::zRotationDegrees( rz ) * M4x4_dynamic;
+  M4x4_dynamic = cryph::Matrix4x4::xRotationDegrees( rx ) * cryph::Matrix4x4::yRotationDegrees( ry ) /* * cryph::Matrix4x4::zRotationDegrees( rz ) */ * M4x4_dynamic;
   
 } /* end GeneralMV::addToGlobalRotationDegrees() */
 

@@ -69,9 +69,6 @@ class GeneralMV : public ModelView
 	static void scaleGlobalZoom( double multiplier ); //!> scale *= multiplier
 	static double scale;                              //!> for global zoom
 	static cryph::Matrix4x4 M4x4_dynamic;             //!> mouse-based dynamic 3D rotations
-	static double _rx;
-	static double _ry;
-	static double _rz;
 
 	vec3 * _points;
 	vec3 * _normals;
