@@ -408,9 +408,10 @@ void GeneralMV::getMatrices( double limits[6] )
     }
 
   float M_dynamic[16];
-  cryph::AffVector min( _ecmin );
-  cryph::AffVector center( _center );
-  cryph::AffVector d = min - center;
+  //cryph::AffVector min( _ecmin );
+  //cryph::AffVector center( _center );
+  //cryph::AffVector d = min - center;
+  cryph::AffVector d( 0, 0, _ecmin[2] - _center[2] );
   cryph::Matrix4x4 Tpre = cryph::Matrix4x4( d );
   cryph::Matrix4x4 Tpost = cryph::Matrix4x4( -d );
   cryph::Matrix4x4 RotationMatrix = Tpre * M4x4_dynamic * Tpost;
